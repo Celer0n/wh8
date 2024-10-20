@@ -1,0 +1,5 @@
+---
+- name: Restart PHP
+  service:
+    name: "{{ 'php-fpm' if ansible_os_family == 'RedHat' else 'apache2' }}"
+    state: restarted

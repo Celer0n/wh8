@@ -1,0 +1,8 @@
+*.tfplan
+*.tfstate*
+*.lock.hcl
+terraform.tfvars
+.terraform/
+.env
+/bak/
+inventory.ini

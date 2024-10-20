@@ -1,0 +1,19 @@
+---
+- name: Install PHP on Debian/Ubuntu
+  apt:
+    name: php
+    state: present
+  when: ansible_os_family == "Debian"
+
+- name: Install PHP on RedHat/CentOS
+  yum:
+    name: php
+    state: present
+  when: ansible_os_family == "RedHat"
+
+- name: Copy PHP configuration file (optional)
+  template:
+    src: php.ini.j2
+    dest: "{{ php_ini_path }}"
+  when: php_ini_custom
+  notify: Restart PHP

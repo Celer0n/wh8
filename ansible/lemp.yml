@@ -1,0 +1,10 @@
+- hosts: all
+  become: yes  
+  tasks:
+    - name: Install Nginx
+      include_role:
+        name: nginx
+      
+    - name: Install PHP
+      include_role:
+        name: php

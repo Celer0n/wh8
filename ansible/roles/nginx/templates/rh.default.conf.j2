@@ -1,0 +1,47 @@
+user nginx;
+worker_processes auto;
+
+error_log /var/log/nginx/error.log;
+pid /var/run/nginx.pid;
+
+events {
+    worker_connections 1024;
+}
+
+http {
+    include /etc/nginx/mime.types;
+    default_type application/octet-stream;
+
+    log_format main '$remote_addr - $remote_user [$time_local] "$request" '
+                  '$status $body_bytes_sent "$http_referer" '
+                  '"$http_user_agent" "$http_x_forwarded_for"';
+
+    access_log /var/log/nginx/access.log main;
+
+    sendfile on;
+    keepalive_timeout 65;
+
+    # Здесь размести свою конфигурацию сервера
+    server {
+        listen {{ nginx_http_port }} default_server;
+        listen [::]:{{ nginx_http_port }} default_server;
+
+        root /usr/share/nginx/html;  # Обновлено для RHEL/CentOS
+
+        index index.html index.htm;  # Убедился, что файл для индекса корректный
+
+        server_name _;
+
+        location / {
+            try_files $uri $uri/ =404;
+        }
+
+        # Обработка PHP
+        location ~ \.php$ {
+            include fastcgi_params;  # Используй fastcgi_params для RHEL/CentOS
+            fastcgi_pass unix:/var/run/php-fpm/www.sock;  # Убедись, что этот путь правильный
+            fastcgi_index index.php;
+            fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        }
+    }
+}
