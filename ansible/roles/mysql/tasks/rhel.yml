@@ -1,0 +1,50 @@
+- name: Add MySQL Yum repository
+  yum:
+    name: https://repo.mysql.com//mysql57-community-release-el7-11.noarch.rpm
+    state: present
+
+- name: Install required MySQL packages
+  yum:
+    name:
+      - python3-PyMySQL
+      - mysql-community-server  # Используйте mysql-community-server вместо mysql-server
+    state: present
+
+- name: Replace mysql configuration
+  ansible.builtin.template:
+    src: "./templates/default.conf.j2"
+    dest: "/etc/mysql/default.conf"
+    mode: "0644"
+
+- name: Start and enable MySQL service
+  service:
+    name: mysql
+    state: started
+    enabled: yes
+
+- name: Create a new database
+  community.mysql.mysql_db:
+    name: '{{ mysql_db_name }}'
+    state: present
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+
+- name: Create database user
+  community.mysql.mysql_user:
+    name: '{{ mysql_user }}'
+    password: '{{ mysql_user_password }}'
+    priv: '*.*:ALL'
+    state: present
+    host: '%'
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+
+- name: Allow remote connections by updating bind address
+  lineinfile:
+    path: /etc/my.cnf
+    regexp: '^bind-address'
+    line: 'bind-address = 0.0.0.0'
+    state: present
+
+- name: Restart MySQL service
+  service:
+    name: mysqld
+    state: restarted

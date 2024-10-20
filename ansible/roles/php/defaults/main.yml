@@ -2,4 +2,5 @@
 php_memory_limit: "128M"
 php_upload_max_filesize: "50M"
 php_ini_custom: false
-php_ini_path: "/etc/php/7.4/apache2/php.ini"
+php_ini_path: "/etc/php/8.1/fpm/php.ini" 
+php_version: "8.1"

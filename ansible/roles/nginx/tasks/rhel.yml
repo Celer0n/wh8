@@ -16,7 +16,7 @@
 
 - name: Copy default index.html
   ansible.builtin.copy:
-    src: "./files/html/index.html"  # Убедись, что у тебя есть файл index.html в этой папке
+    src: "./files/html/index.php"  # Убедись, что у тебя есть файл index.html в этой папке
     dest: "/usr/share/nginx/html/"
     mode: "0644"
 

@@ -8,3 +8,7 @@
     - name: Install PHP
       include_role:
         name: php
+
+    - name: Install mysql
+      include_role:
+        name: mysql
